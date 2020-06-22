@@ -10,13 +10,16 @@ export class BookResolver {
     ) {}
 
     @Query(returns  => Book, { name: 'getBook', nullable: true })
-    async getBook(@Args('id', { type: () => ID}) id: number) {
+    async getBook(@Args('id', { type: () => ID, nullable: true}) id: number) {
         return this.bookService.findById(id);
     }
 
-    @Query(returns  => [Book], { name: 'getBooks',  nullable: true })
-    async getBooks(@Args('title', { type: () => String, nullable: true}) title?: string) {
-        return this.bookService.findAllLike(title);
+    @Query(returns  => [Book])
+    async getBooks(@Args( 'title', { nullable: true }) title: string) {
+        if (title) {
+            return this.bookService.findAllLike(title);
+        }
+        return this.bookService.findAll();
     }
 
     @Mutation(() => Book)

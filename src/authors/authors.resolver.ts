@@ -20,8 +20,8 @@ export class AuthorResolver {
 
     @Query(returns => [Author])
     async getAuthors(
-        @Args('minNumberOfBooks', {type: () => Int}) minNumberOfBooks: number,
-        @Args('maxNumberOfBooks', {type: () => Int}) maxNumberOfBooks: number,) {
+        @Args('minNumberOfBooks', {type: () => Int, nullable: true}) minNumberOfBooks: number,
+        @Args('maxNumberOfBooks', {type: () => Int, nullable: true}) maxNumberOfBooks: number,) {
         if (!minNumberOfBooks && !maxNumberOfBooks) {
             return await this.authorsService.findAll();
         }

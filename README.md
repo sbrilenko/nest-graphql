@@ -60,10 +60,20 @@ mutation {
 }
 ```
 
-### get books 
+### get books empty arg title 
 ```
 {
-  getBooks(title: "") {
+  getBooks {
+    id,
+    title
+  }
+}
+```
+
+### get books with arg title ("like" support)
+```
+{
+  getBooks(title: "first %") {
     id,
     title
   }

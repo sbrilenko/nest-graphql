@@ -32,9 +32,9 @@ export class Author {
 export abstract class IQuery {
     abstract getAuthor(id: string): Author | Promise<Author>;
 
-    abstract getAuthors(maxNumberOfBooks: number, minNumberOfBooks: number): Author[] | Promise<Author[]>;
+    abstract getAuthors(maxNumberOfBooks?: number, minNumberOfBooks?: number): Author[] | Promise<Author[]>;
 
-    abstract getBook(id: string): Book | Promise<Book>;
+    abstract getBook(id?: string): Book | Promise<Book>;
 
     abstract getBooks(title?: string): Book[] | Promise<Book[]>;
 }

@@ -4,7 +4,7 @@ services:
 
   sbc:
     container_name: sbc
-    command: npm run start
+    command: npm run start:debug
     build:
       context: .
       dockerfile: ./Dockerfile
