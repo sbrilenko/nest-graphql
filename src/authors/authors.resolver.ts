@@ -3,29 +3,16 @@ import { Author } from "./authors.schema";
 import { Book } from "./../books/books.schema";
 import { AuthorService } from './authors.service'
 import { AuthorInput } from './inputs/authorInput';
-import {BookService} from "../books/books.service";
 
 @Resolver(of => Author)
 export class AuthorResolver {
     constructor(
-        private authorsService: AuthorService,
-        // private bookService: BookService,
-    ) {
-    }
+        private authorsService: AuthorService
+    ) {}
 
     @Query(returns => Author, {name: 'getAuthor', nullable: true})
     async getAuthor(@Args('id', {type: () => ID}) id: number) {
         return this.authorsService.findById(id);
-    }
-
-    @Query(returns => [Author])
-    async getAuthors(
-        @Args('minNumberOfBooks', {type: () => Int, nullable: true}) minNumberOfBooks: number,
-        @Args('maxNumberOfBooks', {type: () => Int, nullable: true}) maxNumberOfBooks: number,) {
-        if (!minNumberOfBooks && !maxNumberOfBooks) {
-            return await this.authorsService.findAll();
-        }
-        return await this.authorsService.findAll();
     }
 
     @Mutation(() => Author)
@@ -33,7 +20,6 @@ export class AuthorResolver {
         @Args('author') author: AuthorInput,
     ) {
         return this.authorsService.create(author);
-
     }
 
     @Mutation(() => Book)

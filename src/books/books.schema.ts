@@ -12,6 +12,7 @@ export class Book {
     @Field(type => String)
     title: string;
 
+    @Column()
     @Field(type => [Author])
-    authors: Author[];
+    authors: string;
 }

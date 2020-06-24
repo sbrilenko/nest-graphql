@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
@@ -7,6 +6,8 @@ import {AuthorModule} from "./authors/authors.module";
 import { BookModule } from "./books/books.module";
 @Module({
   imports: [
+      AuthorModule,
+      BookModule,
       TypeOrmModule.forRoot(),
       GraphQLModule.forRoot({
           installSubscriptionHandlers: true,
@@ -18,10 +19,6 @@ import { BookModule } from "./books/books.module";
           debug: true,
           playground: true
       }),
-      AuthorModule,
-      BookModule
       ],
-  controllers: [AppController],
-  providers: [],
 })
 export class AppModule {}
