@@ -3,13 +3,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { Book } from './books.schema';
 import { BookInput } from './inputs/bookInput';
-import { uuid } from 'uuidv4';
+import {Author} from "../authors/authors.schema";
 
 @Injectable()
 export class BookService {
     constructor(
         @InjectRepository(Book) private bookRepository: Repository<Book>,
     ) {}
+
+    public async findOne(title: string) {
+        return await this.bookRepository.findOne({ title: title });
+    }
 
     public async findById(id: number) {
         return await this.bookRepository.findOne({ id });
@@ -25,11 +29,10 @@ export class BookService {
         return this.bookRepository.find();
     }
 
-    public async create(bookInput: BookInput) {
-        const { title, authorIds } = bookInput;
+    public async create(title: string, authors) {
         const book = new Book();
         book.title = title;
-        book.authors = authorIds.toString();
+        book.authors = authors;
         return await this.bookRepository.save(book);
     }
 

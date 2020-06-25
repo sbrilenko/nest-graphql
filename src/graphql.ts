@@ -42,7 +42,7 @@ export abstract class IQuery {
 export abstract class IMutation {
     abstract createAuthor(author: AuthorInput): Author | Promise<Author>;
 
-    abstract addAuthor(authorId: number, bookId: number): Book | Promise<Book>;
+    abstract addAuthor(bookId: string, authorId: string): Book | Promise<Book>;
 
     abstract deleteAuthor(id: string): number | Promise<number>;
 

@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Author } from '../authors/authors.schema';
 @Entity()
@@ -12,7 +12,6 @@ export class Book {
     @Field(type => String)
     title: string;
 
-    @Column()
     @Field(type => [Author])
-    authors: string;
+    authors: [Author];
 }

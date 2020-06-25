@@ -39,12 +39,27 @@ export class BookResolver {
         return await this.bookService.findAll();
     }
 
-    @Mutation(() => Book)
+    @Mutation(() => Book, { nullable: true})
     async createBook(
         @Args('book') book: BookInput,
     ) {
-        console.log(book)
-        return this.bookService.create(book);
+        const { title, authorIds } = book;
+        /* check same book */
+        const bookDuplicate = await this.bookService.findOne(title);
+        console.log(bookDuplicate)
+        if (bookDuplicate) {
+            throw new Error('Book with same title already exist');
+        }
+        const authors = await this.getManyAuthors(authorIds);
+        console.log('authors', authors)
+        if (authors.length !== authorIds.length) {
+            throw new Error('check please authors id again');
+        }
+        /* save book */
+        const newBook = await this.bookService.create(title, authors);
+        /* save authors with bookId -> book.id */
+
+        return newBook;
     }
 
     @Mutation(() => Int)
@@ -56,10 +71,15 @@ export class BookResolver {
 
     @Mutation(returns => Book)
     addAuthor(
-        @Args('bookId') bookId: number,
-        @Args('authorId') authorId: number,
+        @Args('authorId', { type: () => ID}) authorId: number,
+        @Args('bookId', { type: () => ID}) bookId: number,
+
     ) {
         return this.bookService.addAuthor(bookId, authorId);
+    }
+
+    public async getManyAuthors(authorsIds: string[]): Promise<Author[]> {
+        return await this.authorService.getManyAuthors(authorsIds);
     }
 
     // @ResolveField()

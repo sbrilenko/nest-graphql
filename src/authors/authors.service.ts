@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { Author } from './authors.schema';
 
 @Injectable()
@@ -33,11 +33,9 @@ export class AuthorService {
     public async getManyAuthors(authorsIds: string[]): Promise<Author[]> {
         return await this.authorRepository.find({
             where: {
-                id: {
-                    $in: authorsIds,
-                },
-            },
-        });
+                id: In(authorsIds)
+            }
+        })
     }
 
 }

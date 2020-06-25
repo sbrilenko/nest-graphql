@@ -4,10 +4,12 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import {AuthorModule} from "./authors/authors.module";
 import { BookModule } from "./books/books.module";
+import {AuthorBooksModule} from "./authorbooks/authorbooks.module";
 @Module({
   imports: [
       AuthorModule,
       BookModule,
+      AuthorBooksModule,
       TypeOrmModule.forRoot(),
       GraphQLModule.forRoot({
           installSubscriptionHandlers: true,
@@ -16,7 +18,7 @@ import { BookModule } from "./books/books.module";
               path: join(process.cwd(), 'src/graphql.ts'),
               outputAs: 'class',
           },
-          debug: true,
+          debug: false,
           playground: true
       }),
       ],

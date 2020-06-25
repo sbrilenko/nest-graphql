@@ -24,10 +24,10 @@ type Query {
 
 type Mutation {
   createAuthor(author: AuthorInput!): Author!
-  addAuthor(authorId: Float!, bookId: Float!): Book!
+  addAuthor(bookId: ID!, authorId: ID!): Book!
   deleteAuthor(id: ID!): Int!
   deleteAuthorWithBooks(id: ID!): Int!
-  createBook(book: BookInput!): Book!
+  createBook(book: BookInput!): Book
   deleteBook(id: ID!): Int!
 }
 
