@@ -74,7 +74,6 @@ export class AuthorResolver {
         const booksForRemove = [];
         allBooksWithAuthors.forEach((book) => {
             if (book.authors.length === 1 && book.authors[0].id == id) {
-                console.log(book.authors[0].id)
                 booksForRemove.push(book);
             }
         })
