@@ -19,15 +19,15 @@ services:
 
 
   sbcmmysql:
-   container_name: sbcmmysql
-   image: mysql:5.7.30
-   ports:
-     - "6000:3306"
-   volumes:
-     - ./mysql-data:/var/lib/mysql
-   environment:
-     MYSQL_ROOT_PASSWORD: root
-     MYSQL_HOST: sbcmmysql
-     MYSQL_DBNAME: sbc
-     MYSQL_USER: root
-     MYSQL_PASSWORD: root
+    container_name: sbcmmysql
+    image: mysql:5.7.30
+    ports:
+      - "6000:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_HOST: sbcmmysql
+      MYSQL_DBNAME: sbc
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root

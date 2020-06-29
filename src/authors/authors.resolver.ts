@@ -1,46 +1,67 @@
 import {Resolver, ResolveProperty, Query, Args, Parent, ID, Int, Mutation} from "@nestjs/graphql";
-import { Author } from "./authors.schema";
-import { Book } from "./../books/books.schema";
-import { AuthorService } from './authors.service'
-import { AuthorInput } from './inputs/authorInput';
+import {Author} from "./authors.schema";
+import {Book} from "./../books/books.schema";
+import {AuthorService} from './authors.service'
+import {AuthorInput} from './inputs/authorInput';
+import {BookService} from "../books/books.service";
 
 @Resolver(of => Author)
 export class AuthorResolver {
     constructor(
-        private authorsService: AuthorService
-    ) {}
+        private authorService: AuthorService,
+        private bookService: BookService,
+    ) {
+    }
 
     @Query(returns => Author, {name: 'getAuthor', nullable: true})
     async getAuthor(@Args('id', {type: () => ID}) id: number) {
-        return this.authorsService.findById(id);
+        return this.authorService.findById(id);
+    }
+
+    @Query(returns => [Author])
+    async getAuthors(
+        @Args('minNumberOfBooks', {type: () => Int, nullable: true}) minNumberOfBooks: number,
+        @Args('maxNumberOfBooks', {type: () => Int, nullable: true}) maxNumberOfBooks: number) {
+        if (!minNumberOfBooks && !maxNumberOfBooks) {
+            return await this.authorService.findAll();
+        }
+        return await this.authorService.count(minNumberOfBooks, maxNumberOfBooks);
     }
 
     @Mutation(() => Author)
     async createAuthor(
         @Args('author') author: AuthorInput,
     ) {
-        return this.authorsService.create(author);
+        return this.authorService.create(author);
     }
 
-    @Mutation(() => Book)
+    @Mutation(returns => Book)
     async addAuthor(
         @Args('authorId', {type: () => ID}) authorId: number,
         @Args('bookId', {type: () => ID}) bookId: number,
     ) {
-        /* do magic */
+        const book = await this.bookService.findById(bookId);
+        if (!book) {
+            throw new Error('book not found');
+        }
+        const author = await this.authorService.findById(authorId);
+        if (!author) {
+            throw new Error('author not found');
+        }
+        return this.bookService.addAuthor(book, author);
     }
 
     @Mutation(() => Int)
     async deleteAuthor(
         @Args('id', {type: () => ID}) id: number
     ) {
-        return this.authorsService.deleteAuthor(id);
+        return await this.authorService.deleteAuthor(id);
     }
 
     @Mutation(() => Int)
     async deleteAuthorWithBooks(
-            @Args('id', {type: () => ID}) id: number
+        @Args('id', {type: () => ID}) id: number
     ) {
-        /* do another magic */
-      }
+        return await this.authorService.deleteAuthor(id);
+    }
 }

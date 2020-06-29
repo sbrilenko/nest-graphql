@@ -1,5 +1,5 @@
-import { InputType, Field, ID,  } from '@nestjs/graphql';
-import { MinLength, IsUUID } from 'class-validator';
+import {InputType, Field, ID,} from '@nestjs/graphql';
+import {MinLength, IsUUID} from 'class-validator';
 
 @InputType()
 export class BookInput {
@@ -8,6 +8,6 @@ export class BookInput {
     title: string;
 
     @Field(() => [ID])
-    @IsUUID('all', { each: true })
+    @IsUUID('all', {each: true})
     authorIds: string[];
 }

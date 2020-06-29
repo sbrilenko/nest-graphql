@@ -1,5 +1,5 @@
 import {Resolver, ResolveProperty, Query, Args, Parent, ID, Mutation, Int, ResolveField} from "@nestjs/graphql";
-import { Book } from "./books.schema";
+import {Book} from "./books.schema";
 import {AuthorService} from "../authors/authors.service";
 import {BookService} from "./books.service";
 import {BookInput} from "../books/inputs/bookInput";
@@ -10,80 +10,53 @@ export class BookResolver {
     constructor(
         private authorService: AuthorService,
         private bookService: BookService,
-    ) {}
+    ) {
+    }
 
-    @Query(returns  => Book, { name: 'getBook', nullable: true })
-    async getBook(@Args('id', { type: () => ID, nullable: true}) id: number) {
+    @Query(returns => Book, {name: 'getBook', nullable: true})
+    async getBook(@Args('id', {type: () => ID, nullable: true}) id: number) {
         return this.bookService.findById(id);
     }
 
-    @Query(returns  => [Book])
-    async getBooks(@Args( 'title', { nullable: true }) title: string) {
+    @Query(returns => [Book])
+    async getBooks(@Args('title', {nullable: true}) title: string) {
         if (title) {
             return this.bookService.findAllLike(title);
         }
         return this.bookService.findAll();
     }
 
-    @Query(returns => [Author])
-    async getAuthors(
-        @Args('minNumberOfBooks', {type: () => Int, nullable: true}) minNumberOfBooks: number,
-        @Args('maxNumberOfBooks', {type: () => Int, nullable: true}) maxNumberOfBooks: number) {
-        if (!minNumberOfBooks && !maxNumberOfBooks) {
-            return await this.bookService.findAll();
-
-        }
-        if(minNumberOfBooks && !maxNumberOfBooks) {
-            return await this.bookService.findAll();
-        }
-        return await this.bookService.findAll();
-    }
-
-    @Mutation(() => Book, { nullable: true})
+    @Mutation(() => Book, {nullable: true})
     async createBook(
         @Args('book') book: BookInput,
     ) {
-        const { title, authorIds } = book;
+        const {title, authorIds} = book;
         /* check same book */
         const bookDuplicate = await this.bookService.findOne(title);
-        console.log(bookDuplicate)
         if (bookDuplicate) {
             throw new Error('Book with same title already exist');
         }
-        const authors = await this.getManyAuthors(authorIds);
-        console.log('authors', authors)
-        if (authors.length !== authorIds.length) {
-            throw new Error('check please authors id again');
+        let authors = [];
+        if (authorIds.length > 0) {
+            authors = await this.getManyAuthors(authorIds);
+            if (authors.length !== authorIds.length) {
+                throw new Error('check please authors id again - seems like some authors does not exist');
+            }
         }
+
         /* save book */
         const newBook = await this.bookService.create(title, authors);
-        /* save authors with bookId -> book.id */
-
         return newBook;
     }
 
     @Mutation(() => Int)
     async deleteBook(
-        @Args('id', { type: () => ID}) id: number
+        @Args('id', {type: () => ID}) id: number
     ) {
-        return this.bookService.delete(id);
+        return await this.bookService.delete(id);
     }
 
-    @Mutation(returns => Book)
-    addAuthor(
-        @Args('authorId', { type: () => ID}) authorId: number,
-        @Args('bookId', { type: () => ID}) bookId: number,
-
-    ) {
-        return this.bookService.addAuthor(bookId, authorId);
-    }
-
-    public async getManyAuthors(authorsIds: string[]): Promise<Author[]> {
+    private async getManyAuthors(authorsIds: string[]): Promise<Author[]> {
         return await this.authorService.getManyAuthors(authorsIds);
     }
-
-    // @ResolveField()
-    // async getAuthors(@Parent() book: Book) {
-    //     return this.authorService.getManyAuthors(book.authors);
-    // }
 }

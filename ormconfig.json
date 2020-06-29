@@ -8,5 +8,7 @@
   "synchronize": true,
   "autoLoadEntities": true,
   "logging": true,
-  "entities": ["dist/**/*.js"]
+  "entities": [
+    "dist/**/*.js"
+  ]
 }

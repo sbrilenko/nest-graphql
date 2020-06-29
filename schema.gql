@@ -17,9 +17,9 @@ type Author {
 
 type Query {
   getAuthor(id: ID!): Author
+  getAuthors(maxNumberOfBooks: Int, minNumberOfBooks: Int): [Author!]!
   getBook(id: ID): Book
   getBooks(title: String): [Book!]!
-  getAuthors(maxNumberOfBooks: Int, minNumberOfBooks: Int): [Author!]!
 }
 
 type Mutation {
