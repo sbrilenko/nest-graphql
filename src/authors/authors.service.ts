@@ -11,11 +11,18 @@ export class AuthorService {
     }
 
     public async findById(id: number): Promise<Author> {
-        return await this.authorRepository.findOne(id);
+        return await this.authorRepository.findOne({
+            where: {
+                id: id
+            },
+            relations: ["books"]
+        });
     }
 
     public async findAll() {
-        return await this.authorRepository.find();
+        return await this.authorRepository.find({
+            relations: ["books"]
+        });
     }
 
     public async create(data) {

@@ -58,10 +58,27 @@ export class AuthorResolver {
         return await this.authorService.deleteAuthor(id);
     }
 
+
     @Mutation(() => Int)
     async deleteAuthorWithBooks(
         @Args('id', {type: () => ID}) id: number
     ) {
+        /* find author */
+        const author = await this.authorService.findById(id);
+
+        /* remove books */
+        const bookIds = author.books.map((book) => {
+                return book.id;
+        });
+        const allBooksWithAuthors = await this.bookService.getManyBooks(bookIds);
+        const booksForRemove = [];
+        allBooksWithAuthors.forEach((book) => {
+            if (book.authors.length === 1 && book.authors[0].id == id) {
+                console.log(book.authors[0].id)
+                booksForRemove.push(book);
+            }
+        })
+        await this.bookService.remove(booksForRemove);
         return await this.authorService.deleteAuthor(id);
     }
 }
